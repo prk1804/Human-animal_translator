@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Human to Animal Translator</title>
   <style>
     body {
@@ -10,8 +10,9 @@
       text-align: center;
       background-color: #f0f0f0;
       padding: 30px;
+      transition: background-color 0.5s ease;
     }
-    select, input, button {
+    input, button {
       font-size: 16px;
       margin: 10px;
       padding: 10px;
@@ -21,32 +22,116 @@
       font-weight: bold;
       color: #333;
     }
+    /* Animal icons */
+    .animal-icons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    .animal {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .animal img {
+      width: 60px;
+      height: 60px;
+      animation: headMove 1.5s infinite alternate ease-in-out;
+    }
+    .animal:hover {
+      transform: scale(1.1);
+    }
+    @keyframes headMove {
+      from { transform: rotate(-5deg); }
+      to { transform: rotate(5deg); }
+    }
+    .animal.selected {
+      border: 3px solid #333;
+    }
+
+    /* Microphone overlay */
+    .mic-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 100;
+      display: none;
+    }
+    .mic-circle {
+      width: 100px;
+      height: 100px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .mic-circle img {
+      width: 50px;
+    }
+    .wave {
+      position: absolute;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      animation: waveAnim 1.5s infinite;
+    }
+    .wave:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+    .wave:nth-child(3) {
+      animation-delay: 0.6s;
+    }
+    @keyframes waveAnim {
+      0% { width: 100px; height: 100px; opacity: 1; }
+      100% { width: 200px; height: 200px; opacity: 0; }
+    }
   </style>
 </head>
 <body>
-  <h1>Human to Animal Translator</h1>
+  <h1>🐾 Human to Animal Translator 🐾</h1>
 
   <input type="text" id="textInput" placeholder="Type something...">
   <button onclick="startVoiceInput()">🎤 Speak</button>
 
-  <br>
-
-  <label for="animalSelect">Choose an animal:</label>
-  <select id="animalSelect">
-    <option value="dog">Dog</option>
-    <option value="cat">Cat</option>
-    <option value="cow">Cow</option>
-  </select>
-
-  <br>
+  <!-- Animal icon selection -->
+  <div class="animal-icons">
+    <div class="animal" data-animal="dog"><img src="https://png.pngtree.com/png-clipart/20230917/original/pngtree-very-cute-puppy-icon-vector-png-image_12273883.png" alt="Dog"></div>
+    <div class="animal" data-animal="cat"><img src="https://png.pngtree.com/png-clipart/20220626/original/pngtree-pink-cute-cat-icon-animal-png-yuri-png-image_8188672.png" alt="Cat"></div>
+    <div class="animal" data-animal="cow"><img src="https://static.vecteezy.com/system/resources/previews/013/211/278/original/cartoon-of-cow-illustration-cow-in-format-image-illustration-of-cow-free-png.png" alt="Cow"></div>
+  </div>
 
   <button onclick="translateMessage()">Translate</button>
-
   <div id="emotionDisplay"></div>
 
   <audio id="animalSound" controls style="margin-top: 20px; display:none;"></audio>
 
+  <!-- Microphone listening overlay -->
+  <div class="mic-overlay" id="micOverlay">
+    <div class="mic-circle">
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <img src="https://static.vecteezy.com/system/resources/previews/001/196/959/original/flat-icon-microphone-png.png" alt="Microphone">
+    </div>
+    <p style="color:white; margin-top:20px;">Listening...</p>
+  </div>
+
   <script>
+    let selectedAnimal = null;
+
     const soundMap = {
       dog: {
         friendly: 'sound/dog/friendly.mp3',
@@ -68,6 +153,22 @@
       }
     };
 
+    const colors = {
+      friendly: "#a8e6cf",
+      angry: "#ff8b94",
+      happy: "#ffd3b6",
+      neutral: "#dcedc1"
+    };
+
+    // Handle animal selection
+    document.querySelectorAll('.animal').forEach(icon => {
+      icon.addEventListener('click', () => {
+        document.querySelectorAll('.animal').forEach(a => a.classList.remove('selected'));
+        icon.classList.add('selected');
+        selectedAnimal = icon.getAttribute('data-animal');
+      });
+    });
+
     function detectEmotion(message) {
       message = message.toLowerCase();
       if (message.includes("hello") || message.includes("hi") || message.includes("hey")) return "friendly";
@@ -78,20 +179,24 @@
 
     function translateMessage() {
       const text = document.getElementById('textInput').value;
-      const animal = document.getElementById('animalSelect').value;
+      if (!selectedAnimal) {
+        alert("Please select an animal!");
+        return;
+      }
       const emotion = detectEmotion(text);
-
       document.getElementById('emotionDisplay').innerText = `Detected Emotion: ${emotion}`;
+      document.body.style.backgroundColor = colors[emotion];
 
-      const soundPath = soundMap[animal][emotion] || soundMap[animal]['neutral'];
-
+      const soundPath = soundMap[selectedAnimal][emotion] || soundMap[selectedAnimal]['neutral'];
       const audio = document.getElementById('animalSound');
       audio.src = soundPath;
-      audio.style.display = 'block';
       audio.play();
     }
 
     function startVoiceInput() {
+      const micOverlay = document.getElementById('micOverlay');
+      micOverlay.style.display = 'flex';
+
       const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
       recognition.lang = 'en-US';
       recognition.start();
@@ -99,10 +204,16 @@
       recognition.onresult = function(event) {
         const speechResult = event.results[0][0].transcript;
         document.getElementById('textInput').value = speechResult;
+        micOverlay.style.display = 'none';
       };
 
       recognition.onerror = function(event) {
         alert('Speech recognition error: ' + event.error);
+        micOverlay.style.display = 'none';
+      };
+
+      recognition.onend = function() {
+        micOverlay.style.display = 'none';
       };
     }
   </script>
