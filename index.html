@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Human to Animal Translator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f0f0f0;
+      padding: 30px;
+    }
+    select, input, button {
+      font-size: 16px;
+      margin: 10px;
+      padding: 10px;
+    }
+    #emotionDisplay {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Human to Animal Translator</h1>
+
+  <input type="text" id="textInput" placeholder="Type something...">
+  <button onclick="startVoiceInput()">🎤 Speak</button>
+
+  <br>
+
+  <label for="animalSelect">Choose an animal:</label>
+  <select id="animalSelect">
+    <option value="dog">Dog</option>
+    <option value="cat">Cat</option>
+    <option value="cow">Cow</option>
+  </select>
+
+  <br>
+
+  <button onclick="translateMessage()">Translate</button>
+
+  <div id="emotionDisplay"></div>
+
+  <audio id="animalSound" controls style="margin-top: 20px; display:none;"></audio>
+
+  <script>
+    const soundMap = {
+      dog: {
+        friendly: 'sounds/dog/friendly.mp3',
+        angry: 'sounds/dog/angry.mp3',
+        happy: 'sounds/dog/happy.mp3',
+        neutral: 'sounds/dog/bark.mp3'
+      },
+      cat: {
+        friendly: 'sounds/cat/friendly.mp3',
+        angry: 'sounds/cat/angry.mp3',
+        happy: 'sounds/cat/happy.mp3',
+        neutral: 'sounds/cat/meow.mp3'
+      },
+      cow: {
+        friendly: 'sounds/cow/friendly.mp3',
+        angry: 'sounds/cow/angry.mp3',
+        happy: 'sounds/cow/happy.mp3',
+        neutral: 'sounds/cow/moo.mp3'
+      }
+    };
+
+    function detectEmotion(message) {
+      message = message.toLowerCase();
+      if (message.includes("hello") || message.includes("hi") || message.includes("hey")) return "friendly";
+      if (message.includes("go away") || message.includes("stop") || message.includes("leave")) return "angry";
+      if (message.includes("love") || message.includes("great") || message.includes("yay")) return "happy";
+      return "neutral";
+    }
+
+    function translateMessage() {
+      const text = document.getElementById('textInput').value;
+      const animal = document.getElementById('animalSelect').value;
+      const emotion = detectEmotion(text);
+
+      document.getElementById('emotionDisplay').innerText = `Detected Emotion: ${emotion}`;
+
+      const soundPath = soundMap[animal][emotion] || soundMap[animal]['neutral'];
+
+      const audio = document.getElementById('animalSound');
+      audio.src = soundPath;
+      audio.style.display = 'block';
+      audio.play();
+    }
+
+    function startVoiceInput() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.start();
+
+      recognition.onresult = function(event) {
+        const speechResult = event.results[0][0].transcript;
+        document.getElementById('textInput').value = speechResult;
+      };
+
+      recognition.onerror = function(event) {
+        alert('Speech recognition error: ' + event.error);
+      };
+    }
+  </script>
+</body>
+</html>
