@@ -15,10 +15,10 @@
 ### Project Description
 A fun web app that lets humans speak or type a message, detects the emotion, and translates it into an animal sound of their choice (dog, cat, or cow) — because sometimes “woof” says it better than words.
 
-### The Problem (that doesn't exist)
+### The Problem 
 Humans and animals can’t understand each other… and frankly, animals are tired of humans talking too much without barking, meowing, or mooing for a change.
 
-### The Solution (that nobody asked for)
+### The Solution
 We made a translator that takes your voice or text and turns it into context-based animal sounds — bridging the “species gap” one bark at a time.
 
 ## Technical Details
@@ -37,14 +37,20 @@ For Hardware:
 For Software:
 
 # Installation
-https://github.com/prk1804/Human-animal_translator.git
+git clone https://github.com/your-username/human-to-animal-translator.git
+cd human-to-animal-translator
+
 # Run
-[commands]
+~Option 1: Open index.html directly in your browser
+~Option 2: Run a local server
+python3 -m http.server 8000
+
+Then visit http://localhost:8000
 
 ### Project Documentation
 For Software:
 
-# Screenshots (Add at least 3)
+# Screenshots
 ![First page](https://github.com/user-attachments/assets/7292f830-6c2c-4af4-a049-c853260b03a5)
 This is our first interfce that user sees one's he/she enters our app.
 
@@ -62,8 +68,7 @@ Taking in input via speech and traslating based on mood
 
 ### Project Demo
 # Video
-[Add your demo video link here]
-*Explain what the video demonstrates*
+https://drive.google.com/file/d/1a60nauK5u8t11mskhbqSPvjz0ZOVwRPK/view?usp=drivesdk
 
 ## Team Contributions
 - Priya Roy: : Built the core HTML/CSS layout, styled fun buttons and icons.
