@@ -46,7 +46,7 @@ cd human-to-animal-translator
 python3 -m http.server 8000
 
 Then visit http://localhost:8000
-or can visit human-animal-translator.vercel.app
+or can visit (https://human-animal-translator.vercel.app/)
 
 ### Project Documentation
 For Software:
