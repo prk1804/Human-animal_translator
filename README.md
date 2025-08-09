@@ -37,9 +37,7 @@ For Hardware:
 For Software:
 
 # Installation
-git clone https://github.com/prk1804/human-to-animal-translator.git
-cd human-to-animal-translator
-
+https://github.com/prk1804/Human-animal_translator.git
 # Run
 [commands]
 
@@ -57,8 +55,8 @@ Translating via speech <img width="1348" height="607" alt="pic3" src="https://gi
 Taking in input via speech and traslating based on mood
 
 # Diagrams
-![Workflow](Add your workflow/architecture diagram here)
-*Add caption explaining your workflow*
+<img width="1919" height="1467" alt="workflow_diagram" src="https://github.com/user-attachments/assets/4c04fe2e-09c2-4a14-a0b2-93a91c4a2375" />
+
 
 
 
